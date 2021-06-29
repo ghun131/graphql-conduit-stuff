@@ -40,10 +40,28 @@ const ArticleType = new GraphQLObjectType({
     }
 })
 
+const CommentType = new GraphQLObjectType({
+    name: 'Comment',
+    fields: {
+        id: { type: GraphQLID },
+        createdAt: { type: GraphQLString },
+        updatedAt: { type: GraphQLString },
+        body: { type: GraphQLString },
+        author: { type: ProfileType }
+    }
+})
+
+const TagType = new GraphQLObjectType({
+    name: 'Tag',
+    fields: {
+        tags: { type: new GraphQLList(GraphQLString) }
+    }
+})
+
 module.exports = {
     UserType,
     ProfileType,
     ArticleType,
-    // Comment,
-    // Tag
+    CommentType,
+    TagType
 }

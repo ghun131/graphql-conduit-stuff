@@ -1,8 +1,10 @@
 const { GraphQLList, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLNonNull } = require('graphql');
-const { UserType, ProfileType, ArticleType } = require('../types');
+const { UserType, ProfileType, ArticleType, CommentType, TagType } = require('../types');
 const get = require('lodash.get');
 const { getMe, getProfile } = require('../../model/auth');
 const { getAllArticles, getArticle } = require('../../model/article');
+const { getAllComments } = require('../../model/comment');
+const { getAllTags } = require('../../model/tags');
 
 const rootQuery = new GraphQLObjectType({
     name: 'Query',
@@ -55,6 +57,17 @@ const rootQuery = new GraphQLObjectType({
                 const data = get(response, 'data.article', null);
                 return data;
             }
+        },
+        comments: {
+            type: new GraphQLList(CommentType),
+            args: {
+                slug: { type: GraphQLString }
+            },
+            resolve: async (_parent, args) => await getAllComments(args.slug)
+        },
+        tags: {
+            type: TagType,
+            resolve: async (_) => await getAllTags()
         }
     })
 })
