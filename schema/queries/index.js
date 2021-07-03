@@ -11,7 +11,7 @@ const rootQuery = new GraphQLObjectType({
     fields: () => ({
         user: {
             type: UserType,
-            args: { token: { type: GraphQLNonNull(GraphQLString) } },
+            args: { token: { type: new GraphQLNonNull(GraphQLString) } },
             resolve: async (_parent, args) => {
                 const response = await getMe(args.token);
                 const data = get(response, 'data.user', null);
@@ -21,8 +21,8 @@ const rootQuery = new GraphQLObjectType({
         profile: {
             type: ProfileType,
             args: {
-                token: { type: GraphQLNonNull(GraphQLString) },
-                username: { type: GraphQLNonNull(GraphQLString) }
+                token: { type: new GraphQLNonNull(GraphQLString) },
+                username: { type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (_parent, args) => {
                 const response = await getProfile(args.token, args.username);

@@ -1,8 +1,8 @@
-const { GraphQLList, GraphQLInt, GraphQLBoolean, GraphQLObjectType, GraphQLID, GraphQLString } = require('graphql');
+const { GraphQLList, GraphQLInt, GraphQLBoolean, GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType, GraphQLNonNull } = require('graphql');
 
 const UserType = new GraphQLObjectType({
     name: 'User',
-    fields: {
+    fields: () => ({
         id: { type: GraphQLID },
         email: { type: GraphQLString },
         createdAt: { type: GraphQLString },
@@ -11,22 +11,22 @@ const UserType = new GraphQLObjectType({
         bio: { type: GraphQLString },
         image: { type: GraphQLString },
         token: { type: GraphQLString },
-    }
+    })
 })
 
 const ProfileType = new GraphQLObjectType({
     name: 'Profile',
-    fields: {
+    fields: () => ({
         username: { type: GraphQLString },
         bio: { type: GraphQLString },
         image: { type: GraphQLString },
         following: { type: GraphQLBoolean }
-    }
+    })
 })
 
 const ArticleType = new GraphQLObjectType({
     name: 'Article',
-    fields: {
+    fields: () => ({
         title: { type: GraphQLString },
         slug: { type: GraphQLString },
         body: { type: GraphQLString },
@@ -37,25 +37,37 @@ const ArticleType = new GraphQLObjectType({
         tagList: { type: new GraphQLList(GraphQLString) },
         favourited: { type: GraphQLBoolean },
         favouritesCount: { type: GraphQLInt }
-    }
+    })
 })
 
 const CommentType = new GraphQLObjectType({
     name: 'Comment',
-    fields: {
+    fields: () => ({
         id: { type: GraphQLID },
         createdAt: { type: GraphQLString },
         updatedAt: { type: GraphQLString },
         body: { type: GraphQLString },
         author: { type: ProfileType }
-    }
+    })
 })
 
 const TagType = new GraphQLObjectType({
     name: 'Tag',
-    fields: {
+    fields: () => ({
         tags: { type: new GraphQLList(GraphQLString) }
-    }
+    })
+})
+
+const InputUserType = new GraphQLInputObjectType({
+    name: 'UserInput',
+    fields: () => ({
+        token: { type: new GraphQLNonNull(GraphQLString) },
+        username: { type: GraphQLString },
+        password: { type: GraphQLString },
+        email: { type: GraphQLString },
+        bio: { type: GraphQLString },
+        image: { type: GraphQLString },
+    })
 })
 
 module.exports = {
@@ -63,5 +75,6 @@ module.exports = {
     ProfileType,
     ArticleType,
     CommentType,
-    TagType
+    TagType,
+    InputUserType
 }
