@@ -1,6 +1,24 @@
 const { GraphQLObjectType, GraphQLString, GraphQLNonNull } = require('graphql');
+const {
+    createArticle,
+    updateArticle,
+    addFavoriteArticle,
+    removeFavoriteArticle,
+    deleteArticle
+} = require('../../model/article');
 const { registerUser, login, updateUserInfo } = require('../../model/auth');
-const { UserType, InputUserType } = require('../types');
+const { addComment, deleteComment } = require('../../model/comment');
+const {
+    UserType,
+    InputUserType,
+    ArticleType,
+    InputArticleType,
+    InputUpdateArticleType,
+    CommentType,
+    InputCommentType,
+    DeleteCommentType,
+    DeletedType
+} = require('../types');
 
 
 const mutation = new GraphQLObjectType({
@@ -36,6 +54,58 @@ const mutation = new GraphQLObjectType({
                 image: args.input.image,
                 token: args.input.token
             })
+        },
+        createArticle: {
+            type: ArticleType,
+            args: {
+                input: { type: InputArticleType }
+            },
+            resolve: async (_parent, args) => createArticle(args.input)
+        },
+        updateArticle: {
+            type: ArticleType,
+            args: {
+                input: { type: InputUpdateArticleType }
+            },
+            resolve: async (_parent, args) => updateArticle(args.input)
+        },
+        addFavorite: {
+            type: ArticleType,
+            args: {
+                token: { type: GraphQLString },
+                slug: { type: GraphQLString }
+            },
+            resolve: async (_parent, args) => await addFavoriteArticle(args.slug, args.token)
+        },
+        removeFavorite: {
+            type: ArticleType,
+            args: {
+                token: { type: GraphQLString },
+                slug: { type: GraphQLString }
+            },
+            resolve: async (_, args) => await removeFavoriteArticle(args.slug, args.token)
+        },
+        addComment: {
+            type: CommentType,
+            args: {
+                input: { type: InputCommentType }
+            },
+            resolve: async (_, args) => await addComment(args.input)
+        },
+        deleteComment: {
+            type: DeletedType,
+            args: {
+                input: { type: DeleteCommentType }
+            },
+            resolve: async (_, args) => await deleteComment(args.input)
+        },
+        deleteArticle: {
+            type: DeletedType,
+            args: {
+                slug: { type: GraphQLString },
+                token: { type: GraphQLString },
+            },
+            resolve: async (_, args) => await deleteArticle(args.slug, args.token)
         }
     })
 })

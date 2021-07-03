@@ -35,8 +35,8 @@ const ArticleType = new GraphQLObjectType({
         description: { type: GraphQLString },
         author: { type: ProfileType },
         tagList: { type: new GraphQLList(GraphQLString) },
-        favourited: { type: GraphQLBoolean },
-        favouritesCount: { type: GraphQLInt }
+        favorited: { type: GraphQLBoolean },
+        favoritesCount: { type: GraphQLInt }
     })
 })
 
@@ -58,6 +58,13 @@ const TagType = new GraphQLObjectType({
     })
 })
 
+const DeletedType = new GraphQLObjectType({
+    name: 'Deleted',
+    fields: () => ({
+        message: { type: GraphQLString }
+    })
+})
+
 const InputUserType = new GraphQLInputObjectType({
     name: 'UserInput',
     fields: () => ({
@@ -70,11 +77,57 @@ const InputUserType = new GraphQLInputObjectType({
     })
 })
 
+const InputArticleType = new GraphQLInputObjectType({
+    name: 'ArticleInput',
+    fields: () => ({
+        token: { type: new GraphQLNonNull(GraphQLString) },
+        title: { type: new GraphQLNonNull(GraphQLString) },
+        description: { type: GraphQLString },
+        body: { type: GraphQLString },
+        tagList: { type: new GraphQLList(GraphQLString) }
+    })
+})
+
+const InputUpdateArticleType = new GraphQLInputObjectType({
+    name: 'UpdateArticleInput',
+    fields: () => ({
+        token: { type: new GraphQLNonNull(GraphQLString) },
+        slug: { type: new GraphQLNonNull(GraphQLString) },
+        title: { type: GraphQLString },
+        description: { type: GraphQLString },
+        body: { type: GraphQLString },
+        tagList: { type: new GraphQLList(GraphQLString) }
+    })
+})
+
+const InputCommentType = new GraphQLInputObjectType({
+    name: 'AddCommentType',
+    fields: () => ({
+        token: { type: new GraphQLNonNull(GraphQLString) },
+        slug: { type: new GraphQLNonNull(GraphQLString) },
+        body: { type: GraphQLString },
+    })
+})
+
+const DeleteCommentType = new GraphQLInputObjectType({
+    name: 'DeleteCommentType',
+    fields: () => ({
+        token: { type: new GraphQLNonNull(GraphQLString) },
+        slug: { type: new GraphQLNonNull(GraphQLString) },
+        commentId: { type: new GraphQLNonNull(GraphQLID) },
+    })
+})
+
 module.exports = {
     UserType,
     ProfileType,
     ArticleType,
     CommentType,
     TagType,
-    InputUserType
+    InputUserType,
+    InputArticleType,
+    InputUpdateArticleType,
+    InputCommentType,
+    DeleteCommentType,
+    DeletedType
 }
