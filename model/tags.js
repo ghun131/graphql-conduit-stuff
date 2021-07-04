@@ -1,10 +1,11 @@
 const get = require('lodash.get');
+const { tagPaths } = require('../apiPaths');
 const { axios } = require('./index');
 
 async function getAllTags() {
     
     const response = await axios({
-        url: '/tags',
+        url: tagPaths.TAGS,
         method: 'get'
     })
 

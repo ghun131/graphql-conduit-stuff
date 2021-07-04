@@ -2,20 +2,21 @@ const { axios, sharedHeaders } = require('./index');
 const appendQuery = require('append-query');
 const omit = require('lodash.omit');
 const get = require('lodash.get');
+const { articlePaths } = require('../apiPaths');
 
 async function getAllArticles({
     limit, offset, author, token, favorited, tag
 }) {
     const options = {
         method: 'get',
-        url: appendQuery('/articles', { limit, offset })
+        url: appendQuery(articlePaths.MANY_ARTICLES, { limit, offset })
     }
     let response;
     if (!author && !token && !favorited && !tag) {
         response = await axios(options);
 
     } else {
-        options.url = appendQuery('/articles', { limit, offset, author, tag, favorited });
+        options.url = appendQuery(articlePaths.MANY_ARTICLES, { limit, offset, author, tag, favorited });
         options.headers = sharedHeaders(token);
 
         response = await axios(options);
@@ -26,7 +27,7 @@ async function getAllArticles({
 async function getArticle(token, slug) {
     return await axios({
         method: 'get',
-        url: '/articles/' + slug,
+        url: articlePaths.ONE_ARTICLE.getPath(slug),
         headers: sharedHeaders(token)
     })
 
@@ -37,7 +38,7 @@ async function createArticle(payload) {
     const { token } = payload;
     const response = await axios({
         method: 'post',
-        url: '/articles',
+        url: articlePaths.MANY_ARTICLES,
         headers: sharedHeaders(token),
         data: { article: { ...newPayload } }
     })
@@ -50,7 +51,7 @@ async function updateArticle(payload) {
     const newPayload = omit(payload, ['token', 'slug']);
     const response = await axios({
         method: 'put',
-        url: '/articles/' + slug,
+        url: articlePaths.ONE_ARTICLE.getPath(slug),
         headers: sharedHeaders(token),
         data: { article: { ...newPayload } }
     })
@@ -61,7 +62,7 @@ async function updateArticle(payload) {
 async function addFavoriteArticle(slug, token) {
     const response = await axios({
         method: 'post',
-        url: '/articles/' + slug + '/favorite',
+        url: articlePaths.FAVORITE_ARTICLE.getPath(slug),
         headers: sharedHeaders(token)
     })
 
@@ -71,7 +72,7 @@ async function addFavoriteArticle(slug, token) {
 async function removeFavoriteArticle(slug, token) {
     const response = await axios({
         method: 'delete',
-        url: '/articles/' + slug + '/favorite',
+        url: articlePaths.FAVORITE_ARTICLE.getPath(slug),
         headers: sharedHeaders(token)
     })
 
@@ -81,7 +82,7 @@ async function removeFavoriteArticle(slug, token) {
 async function deleteArticle(slug, token) {
     const response = await axios({
         method: 'delete',
-        url: `/articles/${slug}`,
+        url: articlePaths.ONE_ARTICLE.getPath(slug),
         headers: sharedHeaders(token)
     })
 

@@ -1,11 +1,11 @@
 const { axios, sharedHeaders } = require('./index')
 const get = require('lodash.get');
 const omit = require('lodash.omit');
-const isnil = require('lodash.isnil');
+const { userPaths } = require('../apiPaths');
 
 async function getMe(token) {
     const response = await axios({
-        url: '/user',
+        url: userPaths.SINGLE_USER,
         method: 'get',
         headers: sharedHeaders(token)
     });
@@ -15,7 +15,7 @@ async function getMe(token) {
 
 async function getProfile(token, username) {
     const response = await axios({
-        url: '/profiles/' + username,
+        url: userPaths.SINGLE_PROFILE.getPath(username),
         method: 'get',
         headers: sharedHeaders(token)
     });
@@ -26,7 +26,7 @@ async function getProfile(token, username) {
 
 async function registerUser(username, email, password) {
     const response = await axios({
-        url: '/users',
+        url: userPaths.MANY_USERS,
         method: 'post',
         data: {
             user: { username, email, password }
@@ -38,7 +38,7 @@ async function registerUser(username, email, password) {
 
 async function login(email, password) {
     const response = await axios({
-        url: '/users/login',
+        url: userPaths.LOGIN_PATH,
         method: 'post',
         data: {
             user: { email, password }
@@ -52,7 +52,7 @@ async function updateUserInfo(data) {
     const payload = omit(data, ['token']);
 
     const response = await axios({
-        url: '/user',
+        url: userPaths.SINGLE_USER,
         method: 'put',
         headers: sharedHeaders(data.token),
         data: {
@@ -65,7 +65,7 @@ async function updateUserInfo(data) {
 
 async function followProfile(token, email, username) {
     const response = await axios({
-        url: `/profiles/${username}/follow`,
+        url: userPaths.FOLLOW_PROFILE_PATH.getPath(username),
         method: 'post',
         headers: sharedHeaders(token),
         data: {
@@ -78,7 +78,7 @@ async function followProfile(token, email, username) {
 
 async function unfollowProfile(token, username) {
     const response = await axios({
-        url: `/profile/${username}/follow`,
+        url: userPaths.FOLLOW_PROFILE_PATH.getPath(username),
         method: 'delete',
         headers: sharedHeaders(token)
     })

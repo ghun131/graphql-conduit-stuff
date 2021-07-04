@@ -1,10 +1,11 @@
 const { axios, sharedHeaders } = require('./index');
 const get = require('lodash.get')
 const omit = require('lodash.omit')
+const { commentPaths } = require('../apiPaths');
 
 async function getAllComments(slug) {
     const response = await axios({
-        url: `/articles/${slug}/comments`,
+        url: commentPaths.ONE_COMMENT.getPath(slug),
         method: 'get'
     })
 
@@ -16,7 +17,7 @@ async function addComment(input) {
     const { slug, token } = input;
     const payload = omit(input, ['slug', 'token']);
     const response = await axios({
-        url: `/articles/${slug}/comments`,
+        url: commentPaths.ONE_COMMENT.getPath(slug),
         method: 'post',
         headers: sharedHeaders(token),
         data: { comment: { ...payload } },
@@ -28,13 +29,13 @@ async function addComment(input) {
 async function deleteComment(input) {
     const { slug, token, commentId } = input;
     const response = await axios({
-        url: `/articles/${slug}/comments/${commentId}`,
+        url: commentPaths.COMMENT_BY_ID.getPath(slug, commentId),
         method: 'delete',
         headers: sharedHeaders(token)
     })
 
     const statusCode = get(response, 'status', null);
-    if (statusCode === 200) return { message: "Deleted successfully!"}
+    if (statusCode === 200) return { message: "Deleted successfully!" }
     return null;
 }
 
