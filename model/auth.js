@@ -63,10 +63,37 @@ async function updateUserInfo(data) {
     return get(response, 'data.user', null);
 }
 
+async function followProfile(token, email, username) {
+    const response = await axios({
+        url: `/profiles/${username}/follow`,
+        method: 'post',
+        headers: sharedHeaders(token),
+        data: {
+            user: { email }
+        }
+    })
+
+    return get(response, 'data.profile', null);
+}
+
+async function unfollowProfile(token, username) {
+    const response = await axios({
+        url: `/profile/${username}/follow`,
+        method: 'delete',
+        headers: sharedHeaders(token)
+    })
+
+    const statusCode = get(response, 'status', null);
+    if (statusCode === 200) return { message: "Deleted successfully!" }
+    return null;
+}
+
 module.exports = {
     getMe,
     getProfile,
     registerUser,
     login,
-    updateUserInfo
+    updateUserInfo,
+    followProfile,
+    unfollowProfile
 }

@@ -6,9 +6,10 @@ const {
     removeFavoriteArticle,
     deleteArticle
 } = require('../../model/article');
-const { registerUser, login, updateUserInfo } = require('../../model/auth');
+const { registerUser, login, updateUserInfo, followProfile, unfollowProfile } = require('../../model/auth');
 const { addComment, deleteComment } = require('../../model/comment');
 const {
+    ProfileType,
     UserType,
     InputUserType,
     ArticleType,
@@ -106,6 +107,23 @@ const mutation = new GraphQLObjectType({
                 token: { type: GraphQLString },
             },
             resolve: async (_, args) => await deleteArticle(args.slug, args.token)
+        },
+        followUser: {
+            type: ProfileType,
+            args: {
+                token: { type: GraphQLString },
+                email: { type: GraphQLString },
+                username: { type: GraphQLString }
+            },
+            resolve: async (_, args) => await followProfile(args.token, args.email, args.username)
+        },
+        unfollowUser: {
+            type: DeletedType,
+            args: {
+                token: { type: GraphQLString },
+                username: { type: GraphQLString }
+            },
+            resolve: async (_, args) => unfollowProfile(args.token, args.username)
         }
     })
 })
