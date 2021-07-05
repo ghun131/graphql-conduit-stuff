@@ -68,7 +68,6 @@ const DeletedType = new GraphQLObjectType({
 const InputUserType = new GraphQLInputObjectType({
     name: 'UserInput',
     fields: () => ({
-        token: { type: new GraphQLNonNull(GraphQLString) },
         username: { type: GraphQLString },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -80,7 +79,6 @@ const InputUserType = new GraphQLInputObjectType({
 const InputArticleType = new GraphQLInputObjectType({
     name: 'ArticleInput',
     fields: () => ({
-        token: { type: new GraphQLNonNull(GraphQLString) },
         title: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         body: { type: GraphQLString },
@@ -91,7 +89,6 @@ const InputArticleType = new GraphQLInputObjectType({
 const InputUpdateArticleType = new GraphQLInputObjectType({
     name: 'UpdateArticleInput',
     fields: () => ({
-        token: { type: new GraphQLNonNull(GraphQLString) },
         slug: { type: new GraphQLNonNull(GraphQLString) },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
@@ -103,7 +100,6 @@ const InputUpdateArticleType = new GraphQLInputObjectType({
 const InputCommentType = new GraphQLInputObjectType({
     name: 'AddCommentType',
     fields: () => ({
-        token: { type: new GraphQLNonNull(GraphQLString) },
         slug: { type: new GraphQLNonNull(GraphQLString) },
         body: { type: GraphQLString },
     })
@@ -112,7 +108,6 @@ const InputCommentType = new GraphQLInputObjectType({
 const DeleteCommentType = new GraphQLInputObjectType({
     name: 'DeleteCommentType',
     fields: () => ({
-        token: { type: new GraphQLNonNull(GraphQLString) },
         slug: { type: new GraphQLNonNull(GraphQLString) },
         commentId: { type: new GraphQLNonNull(GraphQLID) },
     })

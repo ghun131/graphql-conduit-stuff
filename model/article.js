@@ -1,12 +1,12 @@
-const { axios, sharedHeaders } = require('./index');
+const { axios, sharedHeaders, getTokenFromHeaders } = require('./index');
 const appendQuery = require('append-query');
-const omit = require('lodash.omit');
 const get = require('lodash.get');
 const { articlePaths } = require('../apiPaths');
 
 async function getAllArticles({
-    limit, offset, author, token, favorited, tag
-}) {
+    limit, offset, author, favorited, tag
+}, headers) {
+    const token = getTokenFromHeaders(headers);
     const options = {
         method: 'get',
         url: appendQuery(articlePaths.MANY_ARTICLES, { limit, offset })
@@ -21,10 +21,13 @@ async function getAllArticles({
 
         response = await axios(options);
     }
-    return response;
+
+    return get(response, 'data.articles', null);
 }
 
-async function getArticle(token, slug) {
+async function getArticle(headers, slug) {
+    const token = getTokenFromHeaders(headers);
+
     return await axios({
         method: 'get',
         url: articlePaths.ONE_ARTICLE.getPath(slug),
@@ -33,33 +36,35 @@ async function getArticle(token, slug) {
 
 }
 
-async function createArticle(payload) {
-    const newPayload = omit(payload, ['token']);
-    const { token } = payload;
+async function createArticle(headers, payload) {
+    const token = getTokenFromHeaders(headers);
+
     const response = await axios({
         method: 'post',
         url: articlePaths.MANY_ARTICLES,
         headers: sharedHeaders(token),
-        data: { article: { ...newPayload } }
+        data: { article: { ...payload } }
     })
 
     return get(response, 'data.article', null);
 }
 
-async function updateArticle(payload) {
-    const { token, slug } = payload;
-    const newPayload = omit(payload, ['token', 'slug']);
+async function updateArticle(headers, payload) {
+    const token = getTokenFromHeaders(headers);
+
     const response = await axios({
         method: 'put',
         url: articlePaths.ONE_ARTICLE.getPath(slug),
         headers: sharedHeaders(token),
-        data: { article: { ...newPayload } }
+        data: { article: { ...payload } }
     })
 
     return get(response, 'data.article', null);
 }
 
-async function addFavoriteArticle(slug, token) {
+async function addFavoriteArticle(headers, slug) {
+    const token = getTokenFromHeaders(headers);
+
     const response = await axios({
         method: 'post',
         url: articlePaths.FAVORITE_ARTICLE.getPath(slug),
@@ -69,7 +74,9 @@ async function addFavoriteArticle(slug, token) {
     return get(response, 'data.article', null);
 }
 
-async function removeFavoriteArticle(slug, token) {
+async function removeFavoriteArticle(headers, slug) {
+    const token = getTokenFromHeaders(headers);
+
     const response = await axios({
         method: 'delete',
         url: articlePaths.FAVORITE_ARTICLE.getPath(slug),
@@ -79,7 +86,8 @@ async function removeFavoriteArticle(slug, token) {
     return get(response, 'data.article', null);
 }
 
-async function deleteArticle(slug, token) {
+async function deleteArticle(slug, headers) {
+    const token = getTokenFromHeaders(headers)
     const response = await axios({
         method: 'delete',
         url: articlePaths.ONE_ARTICLE.getPath(slug),

@@ -1,4 +1,4 @@
-const { axios, sharedHeaders } = require('./index');
+const { axios, sharedHeaders, getTokenFromHeaders } = require('./index');
 const get = require('lodash.get')
 const omit = require('lodash.omit')
 const { commentPaths } = require('../apiPaths');
@@ -13,7 +13,9 @@ async function getAllComments(slug) {
     return data;
 }
 
-async function addComment(input) {
+async function addComment(input, headers) {
+    const token = getTokenFromHeaders(headers);
+
     const { slug, token } = input;
     const payload = omit(input, ['slug', 'token']);
     const response = await axios({
@@ -26,8 +28,10 @@ async function addComment(input) {
     return get(response, 'data.comment', null);
 }
 
-async function deleteComment(input) {
-    const { slug, token, commentId } = input;
+async function deleteComment(input, headers) {
+    const token = getTokenFromHeaders(headers);
+
+    const { slug, commentId } = input;
     const response = await axios({
         url: commentPaths.COMMENT_BY_ID.getPath(slug, commentId),
         method: 'delete',

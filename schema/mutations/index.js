@@ -40,20 +40,27 @@ const mutation = new GraphQLObjectType({
                 email: { type: new GraphQLNonNull(GraphQLString) },
                 password: { type: new GraphQLNonNull(GraphQLString) }
             },
-            resolve: async (_parent, args) => await login(args.email, args.password)
+            resolve: async (_parent, args, { res }) => {
+                const response = await await login(args.email, args.password);
+                const { token } = response;
+                if (token) {
+                    res.cookie("authToken", token, { secure: true, maxAge: 120000, httpOnly: true });
+                    return response;
+                }
+                return null;
+            }
         },
         updateUser: {
             type: UserType,
             args: {
                 input: { type: InputUserType }
             },
-            resolve: async (_parent, args) => await updateUserInfo({
+            resolve: async (_parent, args, { headers }) => await updateUserInfo(headers, {
                 username: args.input.username,
                 password: args.input.password,
                 email: args.input.email,
                 bio: args.input.bio,
                 image: args.input.image,
-                token: args.input.token
             })
         },
         createArticle: {
@@ -61,14 +68,14 @@ const mutation = new GraphQLObjectType({
             args: {
                 input: { type: InputArticleType }
             },
-            resolve: async (_parent, args) => createArticle(args.input)
+            resolve: async (_parent, args, { headers }) => createArticle(headers, args.input)
         },
         updateArticle: {
             type: ArticleType,
             args: {
                 input: { type: InputUpdateArticleType }
             },
-            resolve: async (_parent, args) => updateArticle(args.input)
+            resolve: async (_parent, args, { headers }) => updateArticle(headers, args.input)
         },
         addFavorite: {
             type: ArticleType,
@@ -76,7 +83,7 @@ const mutation = new GraphQLObjectType({
                 token: { type: GraphQLString },
                 slug: { type: GraphQLString }
             },
-            resolve: async (_parent, args) => await addFavoriteArticle(args.slug, args.token)
+            resolve: async (_parent, args, { headers }) => await addFavoriteArticle(headers, args.slug)
         },
         removeFavorite: {
             type: ArticleType,
@@ -84,46 +91,43 @@ const mutation = new GraphQLObjectType({
                 token: { type: GraphQLString },
                 slug: { type: GraphQLString }
             },
-            resolve: async (_, args) => await removeFavoriteArticle(args.slug, args.token)
+            resolve: async (_, args, { headers }) => await removeFavoriteArticle(headers, args.slug)
         },
         addComment: {
             type: CommentType,
             args: {
                 input: { type: InputCommentType }
             },
-            resolve: async (_, args) => await addComment(args.input)
+            resolve: async (_, args, { headers }) => await addComment(headers, args.input)
         },
         deleteComment: {
             type: DeletedType,
             args: {
                 input: { type: DeleteCommentType }
             },
-            resolve: async (_, args) => await deleteComment(args.input)
+            resolve: async (_, args, { headers }) => await deleteComment(args.input, headers)
         },
         deleteArticle: {
             type: DeletedType,
             args: {
                 slug: { type: GraphQLString },
-                token: { type: GraphQLString },
             },
-            resolve: async (_, args) => await deleteArticle(args.slug, args.token)
+            resolve: async (_, args, { headers }) => await deleteArticle(args.slug, headers)
         },
         followUser: {
             type: ProfileType,
             args: {
-                token: { type: GraphQLString },
                 email: { type: GraphQLString },
                 username: { type: GraphQLString }
             },
-            resolve: async (_, args) => await followProfile(args.token, args.email, args.username)
+            resolve: async (_, args, { headers }) => await followProfile(headers, args.email, args.username)
         },
         unfollowUser: {
             type: DeletedType,
             args: {
-                token: { type: GraphQLString },
                 username: { type: GraphQLString }
             },
-            resolve: async (_, args) => unfollowProfile(args.token, args.username)
+            resolve: async (_, args, { headers }) => unfollowProfile(headers, args.username)
         }
     })
 })
