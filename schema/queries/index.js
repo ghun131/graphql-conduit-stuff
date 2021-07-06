@@ -12,6 +12,7 @@ const rootQuery = new GraphQLObjectType({
     fields: () => ({
         user: {
             type: UserType,
+            description: 'Query your own account information after you sign in',
             resolve: async (_parent, args, { headers }) => await getMe(headers)
         },
         profile: {
