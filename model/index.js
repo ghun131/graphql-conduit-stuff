@@ -1,7 +1,8 @@
 const axios = require('axios');
 const cookieHandler = require('cookie');
+const { BASE_URL } = require('../apiPaths');
 
-axios.defaults.baseURL = "https://conduit.productionready.io/api";
+axios.defaults.baseURL = BASE_URL
 
 function sharedHeaders(token) {
     return {

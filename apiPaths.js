@@ -1,3 +1,5 @@
+const BASE_URL = "https://conduit.productionready.io/api";
+
 const userPaths = {
     SINGLE_USER: '/user',
     SINGLE_PROFILE: {
@@ -37,5 +39,6 @@ module.exports = {
     userPaths,
     articlePaths,
     commentPaths,
-    tagPaths
+    tagPaths,
+    BASE_URL
 }

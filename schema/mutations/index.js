@@ -80,7 +80,6 @@ const mutation = new GraphQLObjectType({
         addFavorite: {
             type: ArticleType,
             args: {
-                token: { type: GraphQLString },
                 slug: { type: GraphQLString }
             },
             resolve: async (_parent, args, { headers }) => await addFavoriteArticle(headers, args.slug)
@@ -88,7 +87,6 @@ const mutation = new GraphQLObjectType({
         removeFavorite: {
             type: ArticleType,
             args: {
-                token: { type: GraphQLString },
                 slug: { type: GraphQLString }
             },
             resolve: async (_, args, { headers }) => await removeFavoriteArticle(headers, args.slug)
