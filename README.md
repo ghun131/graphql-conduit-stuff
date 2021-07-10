@@ -1,7 +1,7 @@
 # Architecture
 This project is an attempt of understanding how GraphQL work with NodeJS + Express server. What is not here can be opinionated.
 
-![architect-image](./structure.svg)
+![architect-image](./architect.svg)
 
 # Analysis based on this experience
 
