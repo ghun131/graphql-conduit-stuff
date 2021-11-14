@@ -7,7 +7,6 @@ async function getAllArticles({
     limit, offset, author, favorited, tag
 }, headers) {
     const token = getTokenFromHeaders(headers);
-    console.log('token', token);
     const options = {
         method: 'get',
         url: appendQuery(articlePaths.MANY_ARTICLES, { limit, offset })
